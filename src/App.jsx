@@ -222,7 +222,7 @@ export class App extends React.Component {
       this.state.pos_x = 5 / 8;
       this.state.s = true;
     } else {
-      this.state.pos_x = 7.5 / 12;
+      this.state.pos_x = 7 / 12;
     }
     this.state.height = this.state.width * this.state.coef;
     this.state.pos_x = (this.state.pos_x * window.innerWidth * (1 - 2 * border) - this.state.width) / 2;
