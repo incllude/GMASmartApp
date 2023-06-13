@@ -407,7 +407,7 @@ export class App extends React.Component {
                     <Cell content={<H2>{':'}</H2>}/>
                   </Col>
                   <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<Badge contentLeft={<H3>{showing_match.team2.club}</H3>} style={{backgroundColor: 'orange'}} />} />
+                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<Badge contentLeft={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} style={{backgroundColor: 'orange'}} />} />
                   </Col>
             
             </Row>
@@ -433,7 +433,7 @@ export class App extends React.Component {
                     }
                     {
                       showing_match.team2.shots.map((value) => (
-                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} fill="orange" stroke="white"/>
+                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} fill="orange" stroke="black"/>
                       ))
                     }
                   </Layer>
