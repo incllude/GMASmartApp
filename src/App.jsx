@@ -412,7 +412,7 @@ export class App extends React.Component {
                 }
               </Col>
               <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={9}>
-                <Stage width={window.innerWidth * 0.5} height={this.state.height}>
+                <Stage width={window.innerWidth * 0.75} height={this.state.height}>
                   <Layer>
                     <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x}/>
                     {
