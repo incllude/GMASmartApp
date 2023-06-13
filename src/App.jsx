@@ -15,8 +15,8 @@ import useImage from 'use-image';
 import { BodyXXS, TextXS } from "@salutejs/plasma-ui";
 import { H3, H2} from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
-import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
-import { Spinner } from '@salutejs/plasma-ui';
+import { CarouselGridWrapper, Carousel, CarouselCol, CarouselLite } from '@salutejs/plasma-ui';
+import { Spinner, Badge } from '@salutejs/plasma-ui';
 
 
 const deviceKind = process.env.DEVICE;
@@ -200,6 +200,7 @@ export class App extends React.Component {
             )
         
             this.state.showing_matches = proccess_matches(this.state.matches);
+            this.state.showing = this.state.showing_matches[this.state.index];
          });
 
     this.state.coef = 928 / 1676;
@@ -221,7 +222,7 @@ export class App extends React.Component {
       this.state.pos_x = 5 / 8;
       this.state.s = true;
     } else {
-      this.state.pos_x = 8 / 12;
+      this.state.pos_x = 7.5 / 12;
     }
     this.state.height = this.state.width * this.state.coef;
     this.state.pos_x = (this.state.pos_x * window.innerWidth * (1 - 2 * border) - this.state.width) / 2;
@@ -336,8 +337,10 @@ export class App extends React.Component {
   }
 
   show_match(action) {
-    this.state.showing = this.state.showing_matches[action.index];
-    this.setState({index: action.index});
+    if (action.index !== null) {
+      this.state.showing = this.state.showing_matches[action.index];
+      this.setState({index: action.index});
+    }
   }
 
   close_match() {
@@ -346,6 +349,15 @@ export class App extends React.Component {
   render() {
 
     const showing_match = this.state.showing;
+    const items = Array(25)
+    .fill({
+        title: 'Заголовок',
+        subtitle: 'Описание уравнение времени, сублимиpуя с повеpхности ядpа кометы, вращает реликтовый ледник',
+    })
+    .map(({ title, subtitle }, i) => ({
+        title: `${title} ${i}`,
+        subtitle: `${subtitle} ${i}`,
+    }));
 
     return (
       <DeviceThemeProvider detectDeviceCallback={detectDeviceCallback} responsiveTypo={true}>
@@ -356,11 +368,9 @@ export class App extends React.Component {
         {
           this.state.loading ?
           <Spinner size={100} style={{margin: 'auto'}}/> :
-          <Container>
-
-            <Row>
-
-              <CarouselGridWrapper>
+          
+          <>
+          <CarouselGridWrapper>
                   <Carousel
                       axis="x"
                       index={this.state.index}
@@ -371,8 +381,8 @@ export class App extends React.Component {
                   >
                     {
                       this.state.showing_matches.map((item, i) => (
-                        <CarouselCol key={`item:${i}`} sizeS={2.5} sizeM={4.5} sizeL={5.5} sizeXL={8.5} scrollSnapAlign="start">
-                          <Card scaleOnFocus={true} focused={i === this.state.index}>
+                        <CarouselCol key={`item:${i}`} scrollSnapAlign="start">
+                          <Card scaleOnFocus={false} focused={i === this.state.index} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015}}>
                             <CardBody>
                               <CardContent>
                                 <Cell contentLeft={item.team1.club} contentRight={<H3>{item.team1.scored}</H3>} />
@@ -385,23 +395,25 @@ export class App extends React.Component {
                     }
                   </Carousel>
               </CarouselGridWrapper>
-            </Row>
+          
+          <Container>
+
             <Row>
             
                   <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<H3>{showing_match.team1.club}</H3>} contentRight={<H2>{showing_match.team1.pG}</H2>} />
+                    <Cell contentLeft={<Badge contentLeft={<H3>{showing_match.team1.club}</H3>} style={{backgroundColor: 'purple'}}/>} contentRight={<H2>{showing_match.team1.pG}</H2>} />
                   </Col>
                   <Col sizeS={ 0.25} sizeM={ 0.25} sizeL={ 0.25} sizeXL={ 0.25} style={{alignItems: 'center'}}>
                     <Cell content={<H2>{':'}</H2>}/>
                   </Col>
                   <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<H3>{showing_match.team2.club}</H3>} />
+                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<Badge contentLeft={<H3>{showing_match.team2.club}</H3>} style={{backgroundColor: 'orange'}} />} />
                   </Col>
             
             </Row>
             <Row>
 
-              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2}>
+              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2.5}>
                 {
                   showing_match.team1.players.map((value) => (
                     this.state.l ?
@@ -410,24 +422,24 @@ export class App extends React.Component {
                   ))
                 }
               </Col>
-              <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={8}>
+              <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={7}>
                 <Stage width={window.innerWidth * 0.7} height={this.state.height}>
                   <Layer>
                     <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x}/>
                     {
                       showing_match.team1.shots.map((value) => (
-                        <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG + 1)} fill="purple" stroke="white"/>
+                        <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} fill="purple" stroke="white"/>
                       ))
                     }
                     {
                       showing_match.team2.shots.map((value) => (
-                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG + 1)} fill="orange" stroke="white"/>
+                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} fill="orange" stroke="white"/>
                       ))
                     }
                   </Layer>
                 </Stage>
               </Col>
-              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2}>
+              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2.5}>
                 {
                   showing_match.team2.players.map((value) => (
                     this.state.l ?
@@ -439,6 +451,7 @@ export class App extends React.Component {
 
             </Row>
           </Container>
+          </>
 
         }
         </AppStyled>
