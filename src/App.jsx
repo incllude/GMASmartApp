@@ -221,7 +221,7 @@ export class App extends React.Component {
       this.state.pos_x = 5 / 8;
       this.state.s = true;
     } else {
-      this.state.pos_x = 9 / 12;
+      this.state.pos_x = 8 / 12;
     }
     this.state.height = this.state.width * this.state.coef;
     this.state.pos_x = (this.state.pos_x * window.innerWidth * (1 - 2 * border) - this.state.width) / 2;
@@ -385,7 +385,6 @@ export class App extends React.Component {
                     }
                   </Carousel>
               </CarouselGridWrapper>
-
             </Row>
             <Row>
             
@@ -402,7 +401,7 @@ export class App extends React.Component {
             </Row>
             <Row>
 
-              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={1.5}>
+              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2}>
                 {
                   showing_match.team1.players.map((value) => (
                     this.state.l ?
@@ -411,8 +410,8 @@ export class App extends React.Component {
                   ))
                 }
               </Col>
-              <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={9}>
-                <Stage width={window.innerWidth * 0.75} height={this.state.height}>
+              <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={8}>
+                <Stage width={window.innerWidth * 0.7} height={this.state.height}>
                   <Layer>
                     <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x}/>
                     {
@@ -428,7 +427,7 @@ export class App extends React.Component {
                   </Layer>
                 </Stage>
               </Col>
-              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={1.5}>
+              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2}>
                 {
                   showing_match.team2.players.map((value) => (
                     this.state.l ?
