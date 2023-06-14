@@ -173,7 +173,7 @@ export class App extends React.Component {
       }
     }
 
-    fetch('https://goalmindanalytics.onrender.com/api/matches/last/8/?format=json')
+    fetch('https://gma-jodode.amvera.io/api/matches/last/8')
          .then(response => {
             if (response.ok) {
               return response.json();
@@ -349,15 +349,6 @@ export class App extends React.Component {
   render() {
 
     const showing_match = this.state.showing;
-    const items = Array(25)
-    .fill({
-        title: 'Заголовок',
-        subtitle: 'Описание уравнение времени, сублимиpуя с повеpхности ядpа кометы, вращает реликтовый ледник',
-    })
-    .map(({ title, subtitle }, i) => ({
-        title: `${title} ${i}`,
-        subtitle: `${subtitle} ${i}`,
-    }));
 
     return (
       <DeviceThemeProvider detectDeviceCallback={detectDeviceCallback} responsiveTypo={true}>
