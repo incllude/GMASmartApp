@@ -153,6 +153,7 @@ export class App extends React.Component {
     this.state = {
       matches: [],
       index: 0,
+      prev: 0,
       loading: true,
       showing_matches: [],
       showing: {
@@ -274,11 +275,17 @@ export class App extends React.Component {
          case 'ArrowLeft':
           if (this.state.index > 0) {
             this.setState({index: this.state.index - 1});
+            // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_NOT_BEGIN', parameters: {index: this.state.index}}});
+          } else {
+            // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_BEGIN'}});
           }
           break;
          case 'ArrowRight':
           if (this.state.index < 7) {
             this.setState({index: this.state.index + 1});
+            // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_NOT_END', parameters: {index: this.state.index}}});
+          } else {
+            // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_END'}});
           }
           break;
          case 'Enter':
@@ -337,10 +344,9 @@ export class App extends React.Component {
   }
 
   show_match(action) {
-    if (action.index !== null) {
+      this.state.prev = this.state.index;
       this.state.showing = this.state.showing_matches[action.index];
       this.setState({index: action.index});
-    }
   }
 
   close_match() {
@@ -392,13 +398,13 @@ export class App extends React.Component {
             <Row>
             
                   <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<Badge contentLeft={<H3>{showing_match.team1.club}</H3>} style={{backgroundColor: 'purple'}}/>} contentRight={<H2>{showing_match.team1.pG}</H2>} />
+                    <Cell contentLeft={<Badge contentLeft={<H3>{showing_match.team1.club}</H3>} style={{height: window.innerHeight * 0.06, backgroundColor: 'purple'}}/>} contentRight={<H2>{showing_match.team1.pG}</H2>} />
                   </Col>
                   <Col sizeS={ 0.25} sizeM={ 0.25} sizeL={ 0.25} sizeXL={ 0.25} style={{alignItems: 'center'}}>
                     <Cell content={<H2>{':'}</H2>}/>
                   </Col>
                   <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<Badge contentLeft={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} style={{backgroundColor: 'orange'}} />} />
+                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<Badge contentLeft={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} style={{height: window.innerHeight * 0.06, backgroundColor: 'orange'}} />} />
                   </Col>
             
             </Row>
