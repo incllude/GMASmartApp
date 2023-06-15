@@ -13,9 +13,9 @@ import { Cell } from "@salutejs/plasma-ui";
 import { Stage, Layer, Circle, Image } from 'react-konva';
 import useImage from 'use-image';
 import { BodyXXS, TextXS } from "@salutejs/plasma-ui";
-import { H3, H2} from "@salutejs/plasma-ui";
+import { H4, H3, H2 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
-import { CarouselGridWrapper, Carousel, CarouselCol, CarouselLite } from '@salutejs/plasma-ui';
+import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
 import { Spinner, Badge } from '@salutejs/plasma-ui';
 
 
@@ -32,14 +32,14 @@ const AppStyled = styled.div`
   min-height: 100vh;
 `;
 
-const Theme = createGlobalStyle(darkSber);
+const Theme = createGlobalStyle(darkEva);
 const TypoScale = createGlobalStyle(sberBox);
 
 const initializeAssistant = (getState) => {
   if (process.env.NODE_ENV === "development") {
     return createSmartappDebugger({
       token: process.env.REACT_APP_TOKEN ?? "",
-      initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
+      initPhrase: `Включи ${process.env.REACT_APP_SMARTAPP}`,
       getState,
     });
   }
@@ -109,6 +109,25 @@ function proccess(club) {
   return splitted.join(' ');
 }
 
+function proccess_date(date_) {
+
+  let from_num_to_day = {
+    1: 'Понедельник',
+    2: 'Вторник',
+    3: 'Среда',
+    4: 'Четверг',
+    5: 'Пятница',
+    6: 'Суббота',
+    7: 'Воскресенье'
+  }
+  let date = new Date(date_);
+  let day = date.getDay();
+  let month = date.getMonth();
+  let year = date.getFullYear();
+  let day_of_week = from_num_to_day[day];
+
+  return day_of_week + ', ' + day + '.' + month + '.' + year;
+}
 
 function proccess_matches(matches) {
 
@@ -117,19 +136,21 @@ function proccess_matches(matches) {
     let team1_id = matches[i].team1.id;
     let team2_id = matches[i].team2.id;
     let showing_match = {
+      league: 'Матч чемпионата РПЛ',
+      date: proccess_date(matches[i].datetime),
       team1: {
         shots:   matches[i].hits[team1_id],
         players: matches[i].lineup[team1_id],
         club:    proccess(matches[i].team1.name),
         scored:  matches[i].team1_score,
-        pG:      matches[i].team1_predicted_score
+        pG:      matches[i].team1_predicted_score,
       },
       team2: {
         shots:   matches[i].hits[team2_id],
         players: matches[i].lineup[team2_id],
         club:    proccess(matches[i].team2.name),
         scored:  matches[i].team2_score,
-        pG:      matches[i].team2_predicted_score
+        pG:      matches[i].team2_predicted_score,
       }
     }
 
@@ -157,6 +178,8 @@ export class App extends React.Component {
       loading: true,
       showing_matches: [],
       showing: {
+        league: '',
+        date: '',
         team1: {
           shots: [],
           players: [],
@@ -174,7 +197,8 @@ export class App extends React.Component {
       }
     }
 
-    fetch('https://gma-jodode.amvera.io/api/matches/last/8')
+    if (this.state.matches !== []) {
+      fetch('https://gma-jodode.amvera.io/api/matches/last/8')
          .then(response => {
             if (response.ok) {
               return response.json();
@@ -203,9 +227,10 @@ export class App extends React.Component {
             this.state.showing_matches = proccess_matches(this.state.matches);
             this.state.showing = this.state.showing_matches[this.state.index];
          });
+    }
 
     this.state.coef = 928 / 1676;
-    this.state.width = window.innerWidth * 0.45;
+    this.state.width = window.innerWidth * 0.4;
     this.state.pos_x = 0;
     this.state.l = false;
     this.state.s = false;
@@ -236,11 +261,11 @@ export class App extends React.Component {
     this.assistant = initializeAssistant(() => this.getStateForAssistant());
 
     this.assistant.on("data", (event) => {
-      console.log(`assistant.on(data)`, event);
+      // console.log(`assistant.on(data)`, event);
       if (event.type === "character") {
-        console.log(`assistant.on(data): character: "${event?.character?.id}"`);
+        // console.log(`assistant.on(data): character: "${event?.character?.id}"`);
       } else if (event.type === "insets") {
-        console.log(`assistant.on(data): insets`);
+        // console.log(`assistant.on(data): insets`);
       } else {
         const {action} = event;
         this.dispatchAssistantAction(action);
@@ -251,11 +276,11 @@ export class App extends React.Component {
 
       let initialData = this.assistant.getInitialData();
 
-      console.log(`assistant.on(start)`, event, initialData);
+      // console.log(`assistant.on(start)`, event, initialData);
     });
 
     this.assistant.on("command", (event) => {
-      console.log(`assistant.on(command)`, event);
+      // console.log(`assistant.on(command)`, event);
     });
 
     this.assistant.on("error", (event) => {
@@ -263,7 +288,7 @@ export class App extends React.Component {
     });
 
     this.assistant.on("tts", (event) => {
-      console.log(`assistant.on(tts)`, event);
+      // console.log(`assistant.on(tts)`, event);
     });
 
     window.addEventListener('keydown', (event) => {
@@ -295,7 +320,7 @@ export class App extends React.Component {
   }
 
   getStateForAssistant() {
-    console.log('getStateForAssistant: this.state:', this.state)
+    // console.log('getStateForAssistant: this.state:', this.state);
     const state = {
       item_selector: {
         items: this.state.matches.map(
@@ -306,7 +331,7 @@ export class App extends React.Component {
         ),
       },
     };
-    console.log('getStateForAssistant: state:', state)
+    // console.log('getStateForAssistant: state:', state);
     return state;
   }
 
@@ -314,7 +339,8 @@ export class App extends React.Component {
     if (action) {
       switch (action.type) {
         case 'show_match':
-          return this.show_match(action);
+          this.setState({index: action.index});
+          break;
 
         case 'close_match':
           return this.close_match();
@@ -344,6 +370,7 @@ export class App extends React.Component {
   }
 
   show_match(action) {
+      console.log('showing match: ', action.index);
       this.state.prev = this.state.index;
       this.state.showing = this.state.showing_matches[action.index];
       this.setState({index: action.index});
@@ -379,7 +406,7 @@ export class App extends React.Component {
                     {
                       this.state.showing_matches.map((item, i) => (
                         <CarouselCol key={`item:${i}`} scrollSnapAlign="start">
-                          <Card scaleOnFocus={false} focused={i === this.state.index} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015}}>
+                          <Card scaleOnFocus={false} outlined={false} focused={i === this.state.index} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015}}>
                             <CardBody>
                               <CardContent>
                                 <Cell contentLeft={item.team1.club} contentRight={<H3>{item.team1.scored}</H3>} />
@@ -395,6 +422,11 @@ export class App extends React.Component {
           
           <Container>
 
+            <Row>
+              <Col sizeS={100} sizeM={100} sizeL={100} sizeXL={100}>
+                  <Cell contentLeft={<H4>{showing_match.league}</H4>} contentRight={<H4>{showing_match.date}</H4>}/>
+              </Col>
+            </Row>
             <Row>
             
                   <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
