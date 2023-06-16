@@ -307,7 +307,7 @@ export class App extends React.Component {
           break;
          case 'ArrowLeft':
           if (this.state.index > 0) {
-            this.setState({index: this.state.index - 1});
+            // this.setState({index: this.state.index - 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_NOT_BEGIN', parameters: {index: this.state.index}}});
           } else {
             // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_BEGIN'}});
@@ -315,7 +315,7 @@ export class App extends React.Component {
           break;
          case 'ArrowRight':
           if (this.state.index < 7) {
-            this.setState({index: this.state.index + 1});
+            // this.setState({index: this.state.index + 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_NOT_END', parameters: {index: this.state.index}}});
           } else {
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_END'}});
@@ -379,6 +379,7 @@ export class App extends React.Component {
 
   show_match(action) {
       console.log('showing match: ', action.index);
+      console.log('Active: ', document.activeElement.tagName, document.activeElement.type || 'N/A');
       this.state.prev = this.state.index;
       this.state.showing = this.state.showing_matches[action.index];
       this.setState({index: action.index});
@@ -399,7 +400,7 @@ export class App extends React.Component {
         <AppStyled>
         {
           this.state.loading ?
-          <Spinner size={100} style={{margin: 'auto'}}/> :
+          <Spinner size={100} style={{margin: 'auto'}} tabIndex={-1}/> :
           
           <>
           <CarouselGridWrapper>
@@ -410,11 +411,12 @@ export class App extends React.Component {
                       detectActive
                       style={{ paddingTop: '1rem', paddingBottom: '0.5rem' }}
                       onIndexChange={(i) => this.show_match({index: i})}
+                      tabIndex={-1}
                   >
                     {
                       this.state.showing_matches.map((item, i) => (
                         <CarouselCol key={`item:${i}`} scrollSnapAlign="start">
-                          <Card scaleOnFocus={false} outlined={false} focused={i === this.state.index} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015, outline: 'none'}}>
+                          <Card scaleOnFocus={false} outlined={true} focused={i === this.state.index} tabIndex={0} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015}}>
                             <CardBody>
                               <CardContent>
                                 <Cell contentLeft={item.team1.club} contentRight={<H3>{item.team1.scored}</H3>} />
@@ -461,17 +463,17 @@ export class App extends React.Component {
                 }
               </Col>
               <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={7}>
-                <Stage width={window.innerWidth * 0.7} height={this.state.height} style={{outline: 'none'}}>
-                  <Layer style={{outline: 'none'}}>
-                    <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x} style={{outline: 'none'}}/>
+                <Stage width={window.innerWidth * 0.7} height={this.state.height} tabIndex={-1}>
+                  <Layer tabIndex={-1}>
+                    <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x} tabIndex={-1}/>
                     {
                       showing_match.team1.shots.map((value) => (
-                        <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} fill="purple" stroke="white"/>
+                        <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="purple" stroke="white"/>
                       ))
                     }
                     {
                       showing_match.team2.shots.map((value) => (
-                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} fill="orange" stroke="black"/>
+                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="orange" stroke="black"/>
                       ))
                     }
                   </Layer>
