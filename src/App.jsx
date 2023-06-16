@@ -30,6 +30,14 @@ const AppStyled = styled.div`
   background-color: ${background};
   background-image: ${gradient};
   min-height: 100vh;
+  html:focus,
+  html:focus-visible,
+  body:focus,
+  body:focus-visible,
+  #root:focus,
+  #root:focus-visible{
+    outline: none !important;
+  }
 `;
 
 const Theme = createGlobalStyle(darkEva);
@@ -378,7 +386,6 @@ export class App extends React.Component {
   }
 
   show_match(action) {
-      console.log('showing match: ', action.index);
       console.log('Active: ', document.activeElement.tagName, document.activeElement.type || 'N/A');
       this.state.prev = this.state.index;
       this.state.showing = this.state.showing_matches[action.index];
@@ -458,7 +465,7 @@ export class App extends React.Component {
                   showing_match.team1.players.map((value) => (
                     this.state.l ?
                     <BodyXXS style={{textAlign: 'left'}}> {'•'  + value.player_name} </BodyXXS> :
-                    <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name }</TextXS>
+                    <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
                   ))
                 }
               </Col>
