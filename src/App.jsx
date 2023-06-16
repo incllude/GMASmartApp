@@ -13,7 +13,7 @@ import { Cell } from "@salutejs/plasma-ui";
 import { Stage, Layer, Circle, Image } from 'react-konva';
 import useImage from 'use-image';
 import { BodyXXS, TextXS } from "@salutejs/plasma-ui";
-import { H4, H3, H2 } from "@salutejs/plasma-ui";
+import { H5, H4, H3, H2 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
 import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
 import { Spinner, Badge } from '@salutejs/plasma-ui';
@@ -109,6 +109,13 @@ function proccess(club) {
   return splitted.join(' ');
 }
 
+function add_zero(number) {
+  if (number < 10) {
+    return '0' + number;
+  }
+  return number;
+}
+
 function proccess_date(date_) {
 
   let from_num_to_day = {
@@ -121,12 +128,13 @@ function proccess_date(date_) {
     7: 'Воскресенье'
   }
   let date = new Date(date_);
+  let day_number = date.getDate()
   let day = date.getDay();
-  let month = date.getMonth();
+  let month = date.getMonth() + 1;
   let year = date.getFullYear();
   let day_of_week = from_num_to_day[day];
 
-  return day_of_week + ', ' + day + '.' + month + '.' + year;
+  return day_of_week + ', ' + add_zero(day_number) + '.' + add_zero(month) + '.' + year;
 }
 
 function proccess_matches(matches) {
@@ -406,7 +414,7 @@ export class App extends React.Component {
                     {
                       this.state.showing_matches.map((item, i) => (
                         <CarouselCol key={`item:${i}`} scrollSnapAlign="start">
-                          <Card scaleOnFocus={false} outlined={false} focused={i === this.state.index} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015}}>
+                          <Card scaleOnFocus={false} outlined={false} focused={i === this.state.index} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015, outline: 'none'}}>
                             <CardBody>
                               <CardContent>
                                 <Cell contentLeft={item.team1.club} contentRight={<H3>{item.team1.scored}</H3>} />
@@ -443,18 +451,19 @@ export class App extends React.Component {
             <Row>
 
               <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2.5}>
+                  <H5 style={{textAlign: 'left'}}>Состав</H5>
                 {
                   showing_match.team1.players.map((value) => (
                     this.state.l ?
-                    <BodyXXS style={{textAlign: 'left'}}>{'(' + (value.playerNo < 10 ? '0' : '') + value.playerNo + ') ' + value.player_name}</BodyXXS> :
-                    <TextXS style={{textAlign: 'left'}}>{'(' + (value.playerNo < 10 ? '0' : '') + value.playerNo + ') ' + value.player_name}</TextXS>
+                    <BodyXXS style={{textAlign: 'left'}}> {'•'  + value.player_name} </BodyXXS> :
+                    <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name }</TextXS>
                   ))
                 }
               </Col>
               <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={7}>
-                <Stage width={window.innerWidth * 0.7} height={this.state.height}>
-                  <Layer>
-                    <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x}/>
+                <Stage width={window.innerWidth * 0.7} height={this.state.height} style={{outline: 'none'}}>
+                  <Layer style={{outline: 'none'}}>
+                    <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x} style={{outline: 'none'}}/>
                     {
                       showing_match.team1.shots.map((value) => (
                         <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} fill="purple" stroke="white"/>
@@ -469,11 +478,12 @@ export class App extends React.Component {
                 </Stage>
               </Col>
               <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2.5}>
+                <H5 style={{textAlign: 'right'}}>Состав</H5>
                 {
                   showing_match.team2.players.map((value) => (
                     this.state.l ?
-                    <BodyXXS style={{textAlign: 'right'}}>{value.player_name + ' (' + (value.playerNo < 10 ? '0' : '') + value.playerNo + ')'}</BodyXXS>:
-                    <TextXS style={{textAlign: 'right'}}>{value.player_name + ' (' + (value.playerNo < 10 ? '0' : '') + value.playerNo + ')'}</TextXS>
+                    <BodyXXS style={{textAlign: 'right'}}> {value.player_name + ' •'} </BodyXXS>:
+                    <TextXS style={{textAlign: 'right'}}>  {value.player_name + ' •'} </TextXS>
                   ))
                 }
               </Col>
