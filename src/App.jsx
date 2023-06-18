@@ -320,15 +320,15 @@ export class App extends React.Component {
           break;
          case 'ArrowLeft':
           if (this.state.index > 0) {
-            // this.setState({index: this.state.index - 1});
+            this.setState({index: this.state.index - 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_NOT_BEGIN', parameters: {index: this.state.index}}});
           } else {
             // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_BEGIN'}});
           }
           break;
          case 'ArrowRight':
-          if (this.state.index < 7) {
-            // this.setState({index: this.state.index + 1});
+          if (this.state.index < 8) {
+            this.setState({index: this.state.index + 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_NOT_END', parameters: {index: this.state.index}}});
           } else {
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_END'}});
@@ -361,7 +361,7 @@ export class App extends React.Component {
       switch (action.type) {
         case 'show_match':
           if (action.index !== null) {
-            this.setState({index: action.index + 1});
+            this.setState({index: action.index});
           }
           break;
 
@@ -435,7 +435,7 @@ export class App extends React.Component {
                               scaleOnFocus={false}
                               outlined={true}
                               focused={i === this.state.index}
-                              tabIndex={0}
+                              tabIndex={-1}
                               style={{width: window.innerWidth * 0.55,
                                 marginLeft: window.innerWidth * 0.025,
                                 marginRight: window.innerWidth * 0.015
