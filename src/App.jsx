@@ -488,58 +488,36 @@ export class App extends React.Component {
                                     <Cell contentLeft={<H2>Последние матчи:</H2>}/>
                               </Col>
                           </Row>
-                          <Row>
-
-                              <Col
-                                  sizeS={2 - this.state.dots / 2}
-                                  sizeM={3 - this.state.dots / 2}
-                                  sizeL={4 - this.state.dots / 2}
-                                  sizeXL={6 - this.state.dots / 2}
-                              >
-                                  {
-                                      match_signs.map((item) => (
-                                          <Row>
-                                              <Col size={100}>
-                                                  <H5 style={{textAlign: 'right'}}>{item.team1}</H5>
-                                              </Col>
-                                          </Row>
-                                      ))
-                                  }
-                              </Col>
-                              <Col
-                                  sizeS={this.state.dots}
-                                  sizeM={this.state.dots}
-                                  sizeL={this.state.dots}
-                                  sizeXL={this.state.dots}
-                              >
-                                  {
-                                      match_signs.map(() => (
-                                          <Row>
-                                              <Col size={100}>
-                                                  <H5 style={{textAlign: 'center'}}>-</H5>
-                                              </Col>
-                                          </Row>
-                                      ))
-                                  }
-                              </Col>
-                              <Col
-                                  sizeS={2 - this.state.dots / 2}
-                                  sizeM={3 - this.state.dots / 2}
-                                  sizeL={4 - this.state.dots / 2}
-                                  sizeXL={6 - this.state.dots / 2}
-                              >
-                                  {
-                                      match_signs.map((item) => (
-                                          <Row>
-                                              <Col size={100}>
-                                                  <H5 style={{textAlign: 'left'}}>{item.team2}</H5>
-                                              </Col>
-                                          </Row>
-                                      ))
-                                  }
-                              </Col>
-
-                          </Row>
+                              {
+                                  match_signs.map((item) => (
+                                      <Row>
+                                          <Col
+                                              sizeS={2 - this.state.dots / 2}
+                                              sizeM={3 - this.state.dots / 2}
+                                              sizeL={4 - this.state.dots / 2}
+                                              sizeXL={6 - this.state.dots / 2}
+                                          >
+                                              <H5 style={{textAlign: 'right'}}>{item.team1}</H5>
+                                          </Col>
+                                          <Col
+                                              sizeS={this.state.dots}
+                                              sizeM={this.state.dots}
+                                              sizeL={this.state.dots}
+                                              sizeXL={this.state.dots}
+                                          >
+                                              <H5 style={{textAlign: 'center'}}>-</H5>
+                                          </Col>
+                                          <Col
+                                              sizeS={2 - this.state.dots / 2}
+                                              sizeM={3 - this.state.dots / 2}
+                                              sizeL={4 - this.state.dots / 2}
+                                              sizeXL={6 - this.state.dots / 2}
+                                          >
+                                              <H5 style={{textAlign: 'left'}}>{item.team2}</H5>
+                                          </Col>
+                                      </Row>
+                                  ))
+                              }
                       </Col>
 
                       <Col
@@ -566,8 +544,16 @@ export class App extends React.Component {
                               <Col
                                   size={100}
                               >
-                                  <Cell contentLeft={<><Badge size='s' style={{backgroundColor: 'purple'}}/><Badge size='s' style={{backgroundColor: 'orange', textAlign: 'left'}}/></>} contentRight={<TextS>обозначает место удара команды; чем больше размер, тем опаснее момент</TextS>} />
-                                  <Cell contentLeft={<H4>Число pG</H4>} contentRight={<TextS>означает, на какое количество голов наиграла команда</TextS>} />
+                                  <Cell contentLeft={
+                                      <div>
+                                          <Badge size='s' style={{backgroundColor: 'purple'}}/>
+                                          <Badge size='s' style={{backgroundColor: 'orange'}}/>
+                                      </div>
+                                  }
+                                        contentRight={<TextS>обозначает точку удара команды; чем больше размер, тем опаснее момент</TextS>}
+                                        style={{paddingBottom: '0.5rem'}}
+                                  />
+                                  <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextS>показывает ожидаемое количество голов команда, основанное на статистике</TextS>} />
                                   <Cell contentLeft={<TextS>Информация о матчах обновляется 1 раз в неделю</TextS>} />
                               </Col>
                           </Row>
@@ -576,16 +562,6 @@ export class App extends React.Component {
 
                   :
 
-                  <>
-                  <Row style={{paddingBottom: '0.5rem'}}>
-                    <Col sizeS={100} sizeM={100} sizeL={100} sizeXL={100}>
-                      <Cell
-                          contentLeft={<H4>{showing_match.league}</H4>}
-                          contentRight={<H4>{showing_match.date}</H4>}
-                      />
-                    </Col>
-                  </Row>
-
                   <Row>
                     <Col
                         sizeS={2 - this.state.sizeS / 2}
@@ -593,6 +569,17 @@ export class App extends React.Component {
                         sizeL={4 - this.state.sizeL / 2}
                         sizeXL={6 - this.state.sizeXL / 2}
                       >
+                        <Row style={{paddingBottom: '0.65rem'}}>
+                            <Col
+                                size={100}
+                                style={{display: 'flex', justifyContent: 'center'}}
+                            >
+                                <Cell
+                                    contentLeft={<H4>{showing_match.league}</H4>}
+                                />
+                            </Col>
+                        </Row>
+
                         <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
                           <Col
                               size={100}
@@ -604,8 +591,9 @@ export class App extends React.Component {
                         <Row style={{paddingBottom: '1rem'}}>
                           <Col
                               size={100}
+                              style={{display: 'flex', justifyContent: 'center'}}
                           >
-                            <Cell contentLeft={<Badge size='s' style={{backgroundColor: 'purple'}}/>} contentRight={<H5>удар {showing_match.team1.club}</H5>} />
+                            <Cell style={{width: '75%'}} contentLeft={<Badge size='s' style={{backgroundColor: 'purple'}}/>} contentRight={<H5>удар {showing_match.team1.club}</H5>} />
                           </Col>
                         </Row>
                         <Row>
@@ -649,6 +637,16 @@ export class App extends React.Component {
                           sizeL={this.state.sizeL}
                           sizeXL={this.state.sizeXL}
                       >
+                          <Row style={{paddingBottom: '0.25rem'}}>
+                              <Col
+                                  size={100}
+                                  style={{display: 'flex', justifyContent: 'center'}}
+                              >
+                                  <Cell
+                                      contentLeft={<H4>Ожидаемые голы (pG)</H4>}
+                                  />
+                              </Col>
+                          </Row>
                         <Row>
                           <Col
                               sizeS={2 - this.state.dots / 2}
@@ -656,7 +654,7 @@ export class App extends React.Component {
                               sizeL={4 - this.state.dots / 2}
                               sizeXL={6 - this.state.dots / 2}
                           >
-                              <H2 style={{textAlign: 'right'}}>{showing_match.team1.pG} pG</H2>
+                              <H2 style={{textAlign: 'right'}}>{showing_match.team1.pG}</H2>
                           </Col>
                           <Col
                               sizeS={this.state.dots}
@@ -672,7 +670,7 @@ export class App extends React.Component {
                               sizeL={4 - this.state.dots / 2}
                               sizeXL={6 - this.state.dots / 2}
                           >
-                              <H2 style={{textAlign: 'left'}}>{showing_match.team2.pG} pG</H2>
+                              <H2 style={{textAlign: 'left'}}>{showing_match.team2.pG}</H2>
                           </Col>
                         </Row>
                         <Row>
@@ -704,6 +702,17 @@ export class App extends React.Component {
                           sizeL={4 - this.state.sizeL / 2}
                           sizeXL={6 - this.state.sizeXL / 2}
                       >
+                          <Row style={{paddingBottom: '0.65rem'}}>
+                              <Col
+                                  size={100}
+                                  style={{display: 'flex', justifyContent: 'center'}}
+                              >
+                                  <Cell
+                                      contentLeft={<H4>{showing_match.date}</H4>}
+                                  />
+                              </Col>
+                          </Row>
+
                         <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
                           <Col
                               size={100}
@@ -715,8 +724,9 @@ export class App extends React.Component {
                         <Row style={{paddingBottom: '1rem'}}>
                           <Col
                               size={100}
+                              style={{display: 'flex', justifyContent: 'center'}}
                           >
-                            <Cell contentLeft={<Badge size='s' style={{backgroundColor: 'orange'}}/>} contentRight={<H5>удар {showing_match.team2.club}</H5>} />
+                            <Cell style={{width: '75%'}} contentLeft={<Badge size='s' style={{backgroundColor: 'orange'}}/>} contentRight={<H5>удар {showing_match.team2.club}</H5>} />
                           </Col>
                         </Row>
                         <Row>
@@ -734,8 +744,8 @@ export class App extends React.Component {
                               sizeXL={6}
                           >
                             {
-                              showing_match.team2.players.slice(6).map((value) => (
-                                  <TextXS style={{textAlign: 'right'}}>  {value.player_name + ' •'} </TextXS>
+                              showing_match.team2.players.slice(0, 6).map((value) => (
+                                  <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
                               ))
                             }
                           </Col>
@@ -746,15 +756,14 @@ export class App extends React.Component {
                               sizeXL={6}
                           >
                             {
-                              showing_match.team2.players.slice(0, 6).map((value) => (
-                                  <TextXS style={{textAlign: 'right'}}>  {value.player_name + ' •'} </TextXS>
+                              showing_match.team2.players.slice(6).map((value) => (
+                                  <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
                               ))
                             }
                           </Col>
                         </Row>
                       </Col>
-                      </Row>
-                  </>
+                  </Row>
             }
 
           </Container>
