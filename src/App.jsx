@@ -13,7 +13,7 @@ import { Cell } from "@salutejs/plasma-ui";
 import { Stage, Layer, Circle, Image } from 'react-konva';
 import useImage from 'use-image';
 import { BodyXXS, TextXS } from "@salutejs/plasma-ui";
-import { H5, H4, H3, H2 } from "@salutejs/plasma-ui";
+import { H5, H4, H3, H2, H1 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
 import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
 import { Spinner, Badge } from '@salutejs/plasma-ui';
@@ -142,7 +142,7 @@ function proccess_date(date_) {
   let year = date.getFullYear();
   let day_of_week = from_num_to_day[day];
 
-  return day_of_week + ', ' + add_zero(day_number) + '.' + add_zero(month) + '.' + year;
+  return add_zero(day_number) + '.' + add_zero(month) + '.' + year;
 }
 
 function proccess_matches(matches) {
@@ -152,7 +152,7 @@ function proccess_matches(matches) {
     let team1_id = matches[i].team1.id;
     let team2_id = matches[i].team2.id;
     let showing_match = {
-      league: 'Матч чемпионата РПЛ',
+      league: 'Матч РПЛ',
       date: proccess_date(matches[i].datetime),
       team1: {
         shots:   matches[i].hits[team1_id],
@@ -247,27 +247,14 @@ export class App extends React.Component {
 
     this.state.coef = 928 / 1676;
     this.state.width = window.innerWidth * 0.4;
-    this.state.pos_x = 0;
-    this.state.l = false;
-    this.state.s = false;
-    let border = 0.07;
-
-    if (window.innerWidth < 1120) {
-      this.state.pos_x = 1 / 4;
-      this.state.l = true;
-    } else if (window.innerWidth < 1540) {
-      this.state.pos_x = 3 / 6;
-      border = 0.085;
-      this.state.width = window.innerWidth * 0.4;
-      this.state.l = true;
-    } else if (window.innerWidth < 1900) {
-      this.state.pos_x = 5 / 8;
-      this.state.s = true;
-    } else {
-      this.state.pos_x = 7 / 12;
-    }
     this.state.height = this.state.width * this.state.coef;
-    this.state.pos_x = (this.state.pos_x * window.innerWidth * (1 - 2 * border) - this.state.width) / 2;
+    this.state.pos_x = 0;
+    this.state.dots = 0.5;
+    let borderXL = 0.078, borderL = 0.072, borderM = 0.103, borderS = 0.12;
+    this.state.sizeS  = 4 * this.state.width  / window.innerWidth / (1 - 2 * borderS);
+    this.state.sizeM  = 6 * this.state.width  / window.innerWidth / (1 - 2 * borderM);
+    this.state.sizeL  = 8 * this.state.width  / window.innerWidth / (1 - 2 * borderL);
+    this.state.sizeXL = 12 * this.state.width / window.innerWidth / (1 - 2 * borderXL);
 
     this.state.start_point = {
       x: this.state.width / 2,
@@ -423,11 +410,26 @@ export class App extends React.Component {
                     {
                       this.state.showing_matches.map((item, i) => (
                         <CarouselCol key={`item:${i}`} scrollSnapAlign="start">
-                          <Card scaleOnFocus={false} outlined={true} focused={i === this.state.index} tabIndex={0} style={{width: window.innerWidth * 0.55, marginLeft: window.innerWidth * 0.025, marginRight: window.innerWidth * 0.015}}>
+                          <Card
+                              scaleOnFocus={false}
+                              outlined={true}
+                              focused={i === this.state.index}
+                              tabIndex={0}
+                              style={{width: window.innerWidth * 0.55,
+                                marginLeft: window.innerWidth * 0.025,
+                                marginRight: window.innerWidth * 0.015
+                              }}
+                          >
                             <CardBody>
                               <CardContent>
-                                <Cell contentLeft={item.team1.club} contentRight={<H3>{item.team1.scored}</H3>} />
-                                <Cell contentLeft={item.team2.club} contentRight={<H3>{item.team2.scored}</H3>} />
+                                <Cell
+                                    contentLeft={item.team1.club}
+                                    contentRight={<H3>{item.team1.scored}</H3>}
+                                />
+                                <Cell
+                                    contentLeft={item.team2.club}
+                                    contentRight={<H3>{item.team2.scored}</H3>}
+                                />
                               </CardContent>
                             </CardBody>
                           </Card>
@@ -439,65 +441,184 @@ export class App extends React.Component {
           
           <Container>
 
-            <Row>
+            <Row style={{paddingBottom: '0.5rem'}}>
               <Col sizeS={100} sizeM={100} sizeL={100} sizeXL={100}>
-                  <Cell contentLeft={<H4>{showing_match.league}</H4>} contentRight={<H4>{showing_match.date}</H4>}/>
+                  <Cell
+                      contentLeft={<H4>{showing_match.league}</H4>}
+                      contentRight={<H4>{showing_match.date}</H4>}
+                  />
               </Col>
             </Row>
-            <Row>
-            
-                  <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<Badge contentLeft={<H3>{showing_match.team1.club}</H3>} style={{height: window.innerHeight * 0.06, backgroundColor: 'purple'}}/>} contentRight={<H2>{showing_match.team1.pG}</H2>} />
-                  </Col>
-                  <Col sizeS={ 0.25} sizeM={ 0.25} sizeL={ 0.25} sizeXL={ 0.25} style={{alignItems: 'center'}}>
-                    <Cell content={<H2>{':'}</H2>}/>
-                  </Col>
-                  <Col sizeS={1.875} sizeM={2.875} sizeL={3.875} sizeXL={5.875}>
-                    <Cell contentLeft={<H2>{showing_match.team2.pG}</H2>} contentRight={<Badge contentLeft={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} style={{height: window.innerHeight * 0.06, backgroundColor: 'orange'}} />} />
-                  </Col>
-            
-            </Row>
-            <Row>
 
-              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2.5}>
-                  <H5 style={{textAlign: 'left'}}>Состав</H5>
-                {
-                  showing_match.team1.players.map((value) => (
-                    this.state.l ?
-                    <BodyXXS style={{textAlign: 'left'}}> {'•'  + value.player_name} </BodyXXS> :
-                    <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
-                  ))
-                }
-              </Col>
-              <Col sizeS={1} sizeM={3} sizeL={5} sizeXL={7}>
-                <Stage width={window.innerWidth * 0.7} height={this.state.height} tabIndex={-1}>
-                  <Layer tabIndex={-1}>
-                    <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x} tabIndex={-1}/>
+            <Row>
+              <Col
+                  sizeS={2 - this.state.sizeS / 2}
+                  sizeM={3 - this.state.sizeM / 2}
+                  sizeL={4 - this.state.sizeL / 2}
+                  sizeXL={6 - this.state.sizeXL / 2}
+              >
+                <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
+                  <Col
+                      size={100}
+                      style={{display: 'flex', justifyContent: 'center'}}
+                  >
+                    <Badge text={<H3>{showing_match.team1.club}</H3>} size='l' style={{backgroundColor: 'purple'}}/>
+                  </Col>
+                </Row>
+                <Row style={{paddingBottom: '1rem'}}>
+                  <Col
+                      size={100}
+                  >
+                    <Cell contentLeft={<Badge size='s' style={{backgroundColor: 'purple'}}/>} contentRight={<H5>удар {showing_match.team1.club}</H5>} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                      size={100}
+                  >
+                    <H5 style={{textAlign: 'center'}}>Состав</H5>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                      sizeS={2}
+                      sizeM={3}
+                      sizeL={4}
+                      sizeXL={6}
+                  >
                     {
-                      showing_match.team1.shots.map((value) => (
-                        <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="purple" stroke="white"/>
+                      showing_match.team1.players.slice(0, 6).map((value) => (
+                              <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
                       ))
                     }
+                  </Col>
+                  <Col
+                      sizeS={2}
+                      sizeM={3}
+                      sizeL={4}
+                      sizeXL={6}
+                  >
                     {
-                      showing_match.team2.shots.map((value) => (
-                        <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="orange" stroke="black"/>
+                      showing_match.team1.players.slice(6).map((value) => (
+                          <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
                       ))
                     }
-                  </Layer>
-                </Stage>
-              </Col>
-              <Col sizeS={1.5} sizeM={1.5} sizeL={1.5} sizeXL={2.5}>
-                <H5 style={{textAlign: 'right'}}>Состав</H5>
-                {
-                  showing_match.team2.players.map((value) => (
-                    this.state.l ?
-                    <BodyXXS style={{textAlign: 'right'}}> {value.player_name + ' •'} </BodyXXS>:
-                    <TextXS style={{textAlign: 'right'}}>  {value.player_name + ' •'} </TextXS>
-                  ))
-                }
+                  </Col>
+                </Row>
               </Col>
 
+              <Col
+                  sizeS={this.state.sizeS}
+                  sizeM={this.state.sizeM}
+                  sizeL={this.state.sizeL}
+                  sizeXL={this.state.sizeXL}
+              >
+                <Row>
+                  <Col
+                      sizeS={2 - this.state.dots / 2}
+                      sizeM={3 - this.state.dots / 2}
+                      sizeL={4 - this.state.dots / 2}
+                      sizeXL={6 - this.state.dots / 2}
+                  >
+                    <H2 style={{textAlign: 'right'}}>{showing_match.team1.pG}</H2>
+                  </Col>
+                  <Col
+                      sizeS={this.state.dots}
+                      sizeM={this.state.dots}
+                      sizeL={this.state.dots}
+                      sizeXL={this.state.dots}
+                  >
+                    <H2 style={{textAlign: 'center'}}>:</H2>
+                  </Col>
+                  <Col
+                      sizeS={2 - this.state.dots / 2}
+                      sizeM={3 - this.state.dots / 2}
+                      sizeL={4 - this.state.dots / 2}
+                      sizeXL={6 - this.state.dots / 2}
+                  >
+                    <H2 style={{textAlign: 'left'}}>{showing_match.team2.pG}</H2>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                      size={100}
+                  >
+                    <Stage width={this.state.width} height={this.state.height} tabIndex={-1}>
+                      <Layer tabIndex={-1}>
+                        <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x} tabIndex={-1}/>
+                        {
+                          showing_match.team1.shots.map((value) => (
+                              <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="purple" stroke="white"/>
+                          ))
+                        }
+                        {
+                          showing_match.team2.shots.map((value) => (
+                              <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="orange" stroke="black"/>
+                          ))
+                        }
+                      </Layer>
+                    </Stage>
+                  </Col>
+                </Row>
+              </Col>
+
+              <Col
+                  sizeS={2 - this.state.sizeS / 2}
+                  sizeM={3 - this.state.sizeM / 2}
+                  sizeL={4 - this.state.sizeL / 2}
+                  sizeXL={6 - this.state.sizeXL / 2}
+              >
+                <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
+                  <Col
+                      size={100}
+                      style={{display: 'flex', justifyContent: 'center'}}
+                  >
+                    <Badge text={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} size='l' style={{backgroundColor: 'orange'}}/>
+                  </Col>
+                </Row>
+                <Row style={{paddingBottom: '1rem'}}>
+                  <Col
+                      size={100}
+                  >
+                    <Cell contentLeft={<Badge size='s' style={{backgroundColor: 'orange'}}/>} contentRight={<H5>удар {showing_match.team2.club}</H5>} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                      size={100}
+                  >
+                    <H5 style={{textAlign: 'center'}}>Состав</H5>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                      sizeS={2}
+                      sizeM={3}
+                      sizeL={4}
+                      sizeXL={6}
+                  >
+                    {
+                      showing_match.team2.players.slice(0, 6).map((value) => (
+                          <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
+                      ))
+                    }
+                  </Col>
+                  <Col
+                      sizeS={2}
+                      sizeM={3}
+                      sizeL={4}
+                      sizeXL={6}
+                  >
+                    {
+                      showing_match.team2.players.slice(6).map((value) => (
+                          <TextXS style={{textAlign: 'left'}}>  {'• ' + value.player_name} </TextXS>
+                      ))
+                    }
+                  </Col>
+                </Row>
+              </Col>
             </Row>
+
           </Container>
           </>
 
