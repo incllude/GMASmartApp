@@ -12,7 +12,7 @@ import { text, background, gradient } from '@salutejs/plasma-tokens';
 import { Cell } from "@salutejs/plasma-ui";
 import { Stage, Layer, Circle, Image } from 'react-konva';
 import useImage from 'use-image';
-import { BodyL, TextXS } from "@salutejs/plasma-ui";
+import { BodyL, TextS, TextM, TextXS } from "@salutejs/plasma-ui";
 import { H5, H4, H3, H2, H1 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
 import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
@@ -446,16 +446,16 @@ export class App extends React.Component {
                                 {
                                   i === 0 ?
                                         <>
-                                          <Cell contentLeft={<H3>Доступные матчи</H3>}/>
-                                          <Cell contentLeft={<H3>Справка</H3>}/>
+                                            <Cell contentLeft={<H3>Последние матчи</H3>}/>
+                                            <Cell contentLeft={<H3>Справка</H3>}/>
                                         </>:
                                         <>
                                             <Cell
-                                                contentLeft={item.team1.club}
+                                                contentLeft={<H3>{item.team1.club}</H3>}
                                                 contentRight={<H3>{item.team1.scored}</H3>}
                                             />
                                             <Cell
-                                                contentLeft={item.team2.club}
+                                                contentLeft={<H3>{item.team2.club}</H3>}
                                                 contentRight={<H3>{item.team2.scored}</H3>}
                                             />
                                         </>
@@ -485,7 +485,7 @@ export class App extends React.Component {
                               <Col
                                   size={100}
                               >
-                                    <Cell contentLeft={<H2>Доступные матчи:</H2>}/>
+                                    <Cell contentLeft={<H2>Последние матчи:</H2>}/>
                               </Col>
                           </Row>
                           <Row>
@@ -566,9 +566,9 @@ export class App extends React.Component {
                               <Col
                                   size={100}
                               >
-                                  <Cell contentLeft={<><Badge size='s' style={{backgroundColor: 'purple'}}/><Badge size='s' style={{backgroundColor: 'orange', textAlign: 'left'}}/></>} contentRight={<H5 bold={false}>обозначает место удара команды; чем больше размер, тем опаснее момент</H5>} />
-                                  <Cell contentLeft={<H4>Число pG</H4>} contentRight={<H5 bold={false}>означает, на какое количество голов наиграла команда</H5>} />
-                                  <Cell contentLeft={<H5 bold={false}>Информация о матчах обновляется раз в неделю</H5>} />
+                                  <Cell contentLeft={<><Badge size='s' style={{backgroundColor: 'purple'}}/><Badge size='s' style={{backgroundColor: 'orange', textAlign: 'left'}}/></>} contentRight={<TextS>обозначает место удара команды; чем больше размер, тем опаснее момент</TextS>} />
+                                  <Cell contentLeft={<H4>Число pG</H4>} contentRight={<TextS>означает, на какое количество голов наиграла команда</TextS>} />
+                                  <Cell contentLeft={<TextS>Информация о матчах обновляется 1 раз в неделю</TextS>} />
                               </Col>
                           </Row>
                       </Col>
