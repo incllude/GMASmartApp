@@ -9,14 +9,20 @@ import { sberBox, sberPortal } from '@salutejs/plasma-tokens/typo';
 import { body1} from '@salutejs/plasma-tokens';
 import { darkJoy, darkEva, darkSber } from '@salutejs/plasma-tokens/themes';
 import { text, background, gradient } from '@salutejs/plasma-tokens';
-import { Cell } from "@salutejs/plasma-ui";
-import { Stage, Layer, Circle, Image } from 'react-konva';
-import useImage from 'use-image';
+import {CarouselItem, Cell} from "@salutejs/plasma-ui";
 import { BodyL, TextS, TextM, TextXS } from "@salutejs/plasma-ui";
 import { H5, H4, H3, H2, H1 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
 import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
-import { Spinner, Badge } from '@salutejs/plasma-ui';
+import { Spinner, Badge, Image } from '@salutejs/plasma-ui';
+import match_1 from "./img/match_1.png";
+import match_2 from "./img/match_2.png";
+import match_3 from "./img/match_3.png";
+import match_4 from "./img/match_4.png";
+import match_5 from "./img/match_5.png";
+import match_6 from "./img/match_6.png";
+import match_7 from "./img/match_7.png";
+import match_8 from "./img/match_8.png";
 
 
 const deviceKind = process.env.DEVICE;
@@ -34,8 +40,8 @@ const AppStyled = styled.div`
   html:focus-visible,
   body:focus,
   body:focus-visible,
-  #root:focus,
-  #root:focus-visible{
+  root:focus,
+  root:focus-visible{
     outline: none !important;
   }
 `;
@@ -52,13 +58,6 @@ const initializeAssistant = (getState) => {
     });
   }
   return createAssistant({getState});
-};
-
-
-const MyImage = (props) => {
-  const { width, height, x } = props;
-  const [image] = useImage('https://raw.githubusercontent.com/incllude/GMSberApp/main/public/smllr.png');
-  return <Image image={image} width={width} height={height} x={x}/>;
 };
 
 
@@ -202,22 +201,22 @@ export class App extends React.Component {
     super(props);
 
     this.empty_match = {
-      league: '',
-          date: '',
-          team1: {
-        shots: [],
+        league: '',
+        date: '',
+        team1: {
+            shots: [],
             players: [],
             club: null,
             scored: null,
             pG: null
-      },
-      team2: {
-        shots: [],
+        },
+        team2: {
+            shots: [],
             players: [],
             club: null,
             scored: null,
             pG: null
-      }
+        }
     };
 
     this.state = {
@@ -258,7 +257,6 @@ export class App extends React.Component {
         
             this.state.showing_matches = proccess_matches(this.state.matches);
             this.state.showing_matches.unshift(this.empty_match);
-            this.state.showing = this.state.showing_matches[this.state.index];
             this.state.match_signs = get_match_sign(this.state.showing_matches.slice(1));
          });
     }
@@ -320,7 +318,7 @@ export class App extends React.Component {
           break;
          case 'ArrowLeft':
           if (this.state.index > 0) {
-            this.setState({index: this.state.index - 1});
+            // this.setState({index: this.state.index - 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_NOT_BEGIN', parameters: {index: this.state.index}}});
           } else {
             // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_BEGIN'}});
@@ -328,7 +326,7 @@ export class App extends React.Component {
           break;
          case 'ArrowRight':
           if (this.state.index < 8) {
-            this.setState({index: this.state.index + 1});
+            // this.setState({index: this.state.index + 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_NOT_END', parameters: {index: this.state.index}}});
           } else {
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_END'}});
@@ -394,8 +392,9 @@ export class App extends React.Component {
 
   show_match(action) {
       console.log('Active: ', document.activeElement.tagName, document.activeElement.type || 'N/A');
-      this.state.showing = this.state.showing_matches[action.index];
-      this.setState({index: action.index});
+      if (action.index !== null && action.index !== this.state.index) {
+          this.setState({index: action.index});
+      }
   }
 
   close_match() {
@@ -403,9 +402,19 @@ export class App extends React.Component {
 
   render() {
 
-    const showing_match = this.state.showing;
     const showing_matches = this.state.showing_matches;
+    const showing_match = showing_matches[this.state.index];
     const match_signs = this.state.match_signs;
+    const index_to_img = {
+        1: match_1,
+        2: match_2,
+        3: match_3,
+        4: match_4,
+        5: match_5,
+        6: match_6,
+        7: match_7,
+        8: match_8,
+    }
 
     return (
       <DeviceThemeProvider detectDeviceCallback={detectDeviceCallback} responsiveTypo={true}>
@@ -415,60 +424,59 @@ export class App extends React.Component {
         <AppStyled>
         {
           this.state.loading ?
-          <Spinner size={100} style={{margin: 'auto'}} tabIndex={-1}/> :
-          
+          <Spinner size={100} style={{margin: 'auto'}} /> :
+
           <>
-          <CarouselGridWrapper>
+              <div style={{alignItems: 'center'}}>
                   <Carousel
+                      as={Row}
                       axis="x"
                       index={this.state.index}
-                      scrollSnapType="mandatory"
-                      detectActive
-                      style={{ paddingTop: '1rem', paddingBottom: '0.5rem' }}
+                      animatedScrollByIndex={true}
+                      detectActive={true}
+                      style={{ paddingTop: '1rem', paddingBottom: '0.5rem', outline: 'none'}}
                       onIndexChange={(i) => this.show_match({index: i})}
-                      tabIndex={-1}
                   >
                     {
                       showing_matches.map((item, i) => (
-                        <CarouselCol key={`item:${i}`} scrollSnapAlign="start">
-                          <Card
-                              scaleOnFocus={false}
-                              outlined={true}
-                              focused={i === this.state.index}
-                              tabIndex={-1}
-                              style={{width: window.innerWidth * 0.55,
-                                marginLeft: window.innerWidth * 0.025,
-                                marginRight: window.innerWidth * 0.015
-                              }}
-                          >
-                            <CardBody>
-                              <CardContent>
-                                {
-                                  i === 0 ?
-                                        <>
-                                            <Cell contentLeft={<H3>Последние матчи</H3>}/>
-                                            <Cell contentLeft={<H3>Справка</H3>}/>
-                                        </>:
-                                        <>
-                                            <Cell
-                                                contentLeft={<H3>{item.team1.club}</H3>}
-                                                contentRight={<H3>{item.team1.scored}</H3>}
-                                            />
-                                            <Cell
-                                                contentLeft={<H3>{item.team2.club}</H3>}
-                                                contentRight={<H3>{item.team2.scored}</H3>}
-                                            />
-                                        </>
-                                }
-                              </CardContent>
-                            </CardBody>
-                          </Card>
-                        </CarouselCol>
+                          // <CarouselItem key={`item:${i}`} aria-label={`${i+1} из ${showing_matches.length}`} scrollSnapAlign="start">
+                              <Card
+                                  key={i}
+                                  tabIndex={0}
+                                  style={{
+                                      outline: 'none',
+                                      width: window.innerWidth * 0.55,
+                                      marginLeft: window.innerWidth * 0.025,
+                                      marginRight: window.innerWidth * 0.025
+                                  }}
+                              >
+                                <CardBody>
+                                  <CardContent>
+                                    {
+                                      i === 0 ?
+                                            <>
+                                                <Cell contentLeft={<H3>Последние матчи</H3>}/>
+                                                <Cell contentLeft={<H3>Справка</H3>}/>
+                                            </>:
+                                            <>
+                                                <Cell
+                                                    contentLeft={<H3>{item.team1.club}</H3>}
+                                                    contentRight={<H3>{item.team1.scored}</H3>}
+                                                />
+                                                <Cell
+                                                    contentLeft={<H3>{item.team2.club}</H3>}
+                                                    contentRight={<H3>{item.team2.scored}</H3>}
+                                                />
+                                            </>
+                                    }
+                                  </CardContent>
+                                </CardBody>
+                              </Card>
+                          // </CarouselItem>
                       ))
                     }
                   </Carousel>
-              </CarouselGridWrapper>
-          
+              </div>
           <Container>
 
             {
@@ -649,26 +657,26 @@ export class App extends React.Component {
                           </Row>
                         <Row>
                           <Col
-                              sizeS={2 - this.state.dots / 2}
-                              sizeM={3 - this.state.dots / 2}
-                              sizeL={4 - this.state.dots / 2}
-                              sizeXL={6 - this.state.dots / 2}
+                              sizeS =  {2 - this.state.dots / 2}
+                              sizeM =  {3 - this.state.dots / 2}
+                              sizeL =  {4 - this.state.dots / 2}
+                              sizeXL = {6 - this.state.dots / 2}
                           >
                               <H2 style={{textAlign: 'right'}}>{showing_match.team1.pG}</H2>
                           </Col>
                           <Col
-                              sizeS={this.state.dots}
-                              sizeM={this.state.dots}
-                              sizeL={this.state.dots}
-                              sizeXL={this.state.dots}
+                              sizeS =  {this.state.dots}
+                              sizeM =  {this.state.dots}
+                              sizeL =  {this.state.dots}
+                              sizeXL = {this.state.dots}
                           >
                             <H2 style={{textAlign: 'center'}}>:</H2>
                           </Col>
                           <Col
-                              sizeS={2 - this.state.dots / 2}
-                              sizeM={3 - this.state.dots / 2}
-                              sizeL={4 - this.state.dots / 2}
-                              sizeXL={6 - this.state.dots / 2}
+                              sizeS =  {2 - this.state.dots / 2}
+                              sizeM =  {3 - this.state.dots / 2}
+                              sizeL =  {4 - this.state.dots / 2}
+                              sizeXL = {6 - this.state.dots / 2}
                           >
                               <H2 style={{textAlign: 'left'}}>{showing_match.team2.pG}</H2>
                           </Col>
@@ -677,21 +685,12 @@ export class App extends React.Component {
                           <Col
                               size={100}
                           >
-                            <Stage width={this.state.width} height={this.state.height} tabIndex={-1}>
-                              <Layer tabIndex={-1}>
-                                <MyImage width={this.state.width} height={this.state.height} x={this.state.pos_x} tabIndex={-1}/>
-                                {
-                                  showing_match.team1.shots.map((value) => (
-                                      <Circle x={this.state.pos_x + reflect(this.state.start_point.x, transform(this.state.start_point, value).x)} y={reflect(this.state.start_point.y, transform(this.state.start_point, value).y)} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="purple" stroke="white"/>
-                                  ))
-                                }
-                                {
-                                  showing_match.team2.shots.map((value) => (
-                                      <Circle x={this.state.pos_x + transform(this.state.start_point, value).x} y={transform(this.state.start_point, value).y} radius={8 * (value.PG * 1.3 + 1)} tabIndex={-1} fill="orange" stroke="black"/>
-                                  ))
-                                }
-                              </Layer>
-                            </Stage>
+                              <Image
+                                  src={'https://raw.githubusercontent.com/incllude/GMSberApp/main/public/smllr.png'}
+                                  width={this.state.width}
+                                  height={this.state.height}
+                                  style={{margin: 'auto'}}
+                              />
                           </Col>
                         </Row>
                       </Col>
@@ -776,6 +775,4 @@ export class App extends React.Component {
     )
   }
 
-
 }
-
