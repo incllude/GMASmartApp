@@ -13,14 +13,26 @@ import {CarouselItem, Cell} from "@salutejs/plasma-ui";
 import { BodyL, TextS, TextM, TextXS } from "@salutejs/plasma-ui";
 import { H5, H4, H3, H2, H1 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
-import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
 import { Spinner, Badge, Image, Marquee } from '@salutejs/plasma-ui';
-import { ReactDOM} from "react";
 
 
 const deviceKind = process.env.DEVICE;
 const detectDeviceCallback = () => deviceKind;
 const cities = ['Москва', 'Санкт-Петербург', "Самара", "Пермь"];
+const club_to_short = {
+    'Зенит': 'ЗЕН',
+    'Факел': 'ФКЛ',
+    'Крылья Советов': 'КС',
+    'Спартак': 'СПА',
+    'Нижний Новгород': 'ПАРИ',
+    'Химки': 'ХИМ',
+    'Локомотив': 'ЛОКО',
+    'Торпедо': 'ТОР',
+    'ФК Ахмат': 'АХМ',
+    'ФК Краснодар': 'КРА',
+    'ЦСКА': 'ЦСКА',
+    'ФК Ростов': 'РОС',
+}
 
 
 const AppStyled = styled.div`
@@ -237,7 +249,7 @@ export class App extends React.Component {
          })
          .finally(() => {
             this.setState({loading: false});
-            this.state.matches = this.state.matches.slice(0, 4);
+            this.state.matches = this.state.matches.slice(0, 6);
 
             this.edited_matches = this.state.matches.map(
               (value, index) => ({
@@ -421,10 +433,10 @@ export class App extends React.Component {
                     {
                       showing_matches.map((item, i) => (
                           <Col
-                            sizeS={4 / 5}
-                            sizeM={6 / 5}
-                            sizeL={8 / 5}
-                            sizeXL={12 / 5}
+                            sizeS={4 / showing_matches.length}
+                            sizeM={6 / showing_matches.length}
+                            sizeL={8 / showing_matches.length}
+                            sizeXL={12 / showing_matches.length}
                             style={{
                                 display: 'flex', justifyContent: 'center',
                             }}
@@ -436,7 +448,7 @@ export class App extends React.Component {
                                   style={{
                                       outline: 'none',
                                       height: window.innerHeight * 0.15,
-                                      width: window.innerWidth * (1 - 0.04 * showing_matches.length) / showing_matches.length
+                                      width: window.innerWidth * (1 - 0.03 * showing_matches.length) / showing_matches.length
                                   }}
                               >
                                 <CardBody>
@@ -444,11 +456,11 @@ export class App extends React.Component {
                                     {
                                       i === 0 ?
                                             <>
-                                                <H3>Справка</H3>
+                                                <H5>Справка</H5>
                                             </>:
                                             <>
-                                                <Marquee><H3>{item.team1.club}</H3></Marquee>
-                                                <Marquee><H3>{item.team2.club}</H3></Marquee>
+                                                <H3>{club_to_short[item.team1.club]}</H3>
+                                                <H3>{club_to_short[item.team2.club]}</H3>
                                             </>
                                     }
                                   </CardContent>
@@ -487,7 +499,7 @@ export class App extends React.Component {
                                               sizeL={4 - this.state.dots / 2}
                                               sizeXL={6 - this.state.dots / 2}
                                           >
-                                              <H5 style={{textAlign: 'right'}}>{item.team1}</H5>
+                                              <TextS style={{textAlign: 'right'}}>({club_to_short[item.team1]}) {item.team1}</TextS>
                                           </Col>
                                           <Col
                                               sizeS={this.state.dots}
@@ -495,7 +507,7 @@ export class App extends React.Component {
                                               sizeL={this.state.dots}
                                               sizeXL={this.state.dots}
                                           >
-                                              <H5 style={{textAlign: 'center'}}>-</H5>
+                                              <TextS style={{textAlign: 'center'}}>-</TextS>
                                           </Col>
                                           <Col
                                               sizeS={2 - this.state.dots / 2}
@@ -503,7 +515,7 @@ export class App extends React.Component {
                                               sizeL={4 - this.state.dots / 2}
                                               sizeXL={6 - this.state.dots / 2}
                                           >
-                                              <H5 style={{textAlign: 'left'}}>{item.team2}</H5>
+                                              <TextS style={{textAlign: 'left'}}>{item.team2} ({club_to_short[item.team2]})</TextS>
                                           </Col>
                                       </Row>
                                   ))
@@ -545,6 +557,7 @@ export class App extends React.Component {
                                   />
                                   <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextS>показывает ожидаемое количество голов команда, основанное на статистике</TextS>} />
                                   <Cell contentLeft={<TextS>Информация о матчах обновляется 2 раза в неделю</TextS>} />
+                                  <Cell contentLeft={<TextS>Сокращения клубов взяты из официальных материалов чемпионата</TextS>} />
                               </Col>
                           </Row>
                       </Col>
@@ -583,7 +596,7 @@ export class App extends React.Component {
                                 size={100}
                                 style={{display: 'flex', justifyContent: 'center'}}
                             >
-                                <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H4>{showing_match.team1.scored}</H4>} />
+                                <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H3>{showing_match.team1.scored}</H3>} />
                             </Col>
                         </Row>
                         <Row style={{paddingBottom: '1rem'}}>
@@ -715,7 +728,7 @@ export class App extends React.Component {
                                   size={100}
                                   style={{display: 'flex', justifyContent: 'center'}}
                               >
-                                  <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H4>{showing_match.team2.scored}</H4>} />
+                                  <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H3>{showing_match.team2.scored}</H3>} />
                               </Col>
                           </Row>
                         <Row style={{paddingBottom: '1rem'}}>
