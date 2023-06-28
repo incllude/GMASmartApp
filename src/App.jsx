@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import {createAssistant, createSmartappDebugger,} from "@salutejs/client";
 
 import {Container, Row} from '@salutejs/plasma-ui/components/Grid'
@@ -14,15 +14,8 @@ import { BodyL, TextS, TextM, TextXS } from "@salutejs/plasma-ui";
 import { H5, H4, H3, H2, H1 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
 import { CarouselGridWrapper, Carousel, CarouselCol } from '@salutejs/plasma-ui';
-import { Spinner, Badge, Image } from '@salutejs/plasma-ui';
-import match_1 from "./img/match_1.png";
-import match_2 from "./img/match_2.png";
-import match_3 from "./img/match_3.png";
-import match_4 from "./img/match_4.png";
-import match_5 from "./img/match_5.png";
-import match_6 from "./img/match_6.png";
-import match_7 from "./img/match_7.png";
-import match_8 from "./img/match_8.png";
+import { Spinner, Badge, Image, Marquee } from '@salutejs/plasma-ui';
+import { ReactDOM} from "react";
 
 
 const deviceKind = process.env.DEVICE;
@@ -244,6 +237,7 @@ export class App extends React.Component {
          })
          .finally(() => {
             this.setState({loading: false});
+            this.state.matches = this.state.matches.slice(0, 4);
 
             this.edited_matches = this.state.matches.map(
               (value, index) => ({
@@ -325,7 +319,7 @@ export class App extends React.Component {
           }
           break;
          case 'ArrowRight':
-          if (this.state.index < 8) {
+          if (this.state.index < this.state.matches.length - 1) {
             // this.setState({index: this.state.index + 1});
             // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_NOT_END', parameters: {index: this.state.index}}});
           } else {
@@ -385,7 +379,7 @@ export class App extends React.Component {
   }
 
   next_match() {
-    if (this.state.index < 8) {
+    if (this.state.index < this.state.matches.length - 1) {
       this.setState({index: this.state.index + 1});
     }
   }
@@ -405,16 +399,6 @@ export class App extends React.Component {
     const showing_matches = this.state.showing_matches;
     const showing_match = showing_matches[this.state.index];
     const match_signs = this.state.match_signs;
-    const index_to_img = {
-        1: match_1,
-        2: match_2,
-        3: match_3,
-        4: match_4,
-        5: match_5,
-        6: match_6,
-        7: match_7,
-        8: match_8,
-    }
 
     return (
       <DeviceThemeProvider detectDeviceCallback={detectDeviceCallback} responsiveTypo={true}>
@@ -427,27 +411,32 @@ export class App extends React.Component {
           <Spinner size={100} style={{margin: 'auto'}} /> :
 
           <>
-              <div style={{alignItems: 'center'}}>
-                  <Carousel
-                      as={Row}
-                      axis="x"
-                      index={this.state.index}
-                      animatedScrollByIndex={true}
-                      detectActive={true}
-                      style={{ paddingTop: '1rem', paddingBottom: '0.5rem', outline: 'none'}}
-                      onIndexChange={(i) => this.show_match({index: i})}
+              <Container>
+                  <Row
+                      style={{
+                          paddingTop: '1rem'
+                      }}
                   >
+
                     {
                       showing_matches.map((item, i) => (
-                          // <CarouselItem key={`item:${i}`} aria-label={`${i+1} из ${showing_matches.length}`} scrollSnapAlign="start">
+                          <Col
+                            sizeS={4 / 5}
+                            sizeM={6 / 5}
+                            sizeL={8 / 5}
+                            sizeXL={12 / 5}
+                            style={{
+                                display: 'flex', justifyContent: 'center',
+                            }}
+                          >
                               <Card
-                                  key={i}
-                                  tabIndex={0}
+                                  tabIndex={i}
+                                  onFocus={() => this.show_match({index: i})}
+                                  focused={ i === this.state.index }
                                   style={{
                                       outline: 'none',
-                                      width: window.innerWidth * 0.55,
-                                      marginLeft: window.innerWidth * 0.025,
-                                      marginRight: window.innerWidth * 0.025
+                                      height: window.innerHeight * 0.15,
+                                      width: window.innerWidth * (1 - 0.04 * showing_matches.length) / showing_matches.length
                                   }}
                               >
                                 <CardBody>
@@ -455,28 +444,21 @@ export class App extends React.Component {
                                     {
                                       i === 0 ?
                                             <>
-                                                <Cell contentLeft={<H3>Последние матчи</H3>}/>
-                                                <Cell contentLeft={<H3>Справка</H3>}/>
+                                                <H3>Справка</H3>
                                             </>:
                                             <>
-                                                <Cell
-                                                    contentLeft={<H3>{item.team1.club}</H3>}
-                                                    contentRight={<H3>{item.team1.scored}</H3>}
-                                                />
-                                                <Cell
-                                                    contentLeft={<H3>{item.team2.club}</H3>}
-                                                    contentRight={<H3>{item.team2.scored}</H3>}
-                                                />
+                                                <Marquee><H3>{item.team1.club}</H3></Marquee>
+                                                <Marquee><H3>{item.team2.club}</H3></Marquee>
                                             </>
                                     }
                                   </CardContent>
                                 </CardBody>
                               </Card>
-                          // </CarouselItem>
+                          </Col>
                       ))
                     }
-                  </Carousel>
-              </div>
+                  </Row>
+              </Container>
           <Container>
 
             {
@@ -562,7 +544,7 @@ export class App extends React.Component {
                                         style={{paddingBottom: '0.5rem'}}
                                   />
                                   <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextS>показывает ожидаемое количество голов команда, основанное на статистике</TextS>} />
-                                  <Cell contentLeft={<TextS>Информация о матчах обновляется 1 раз в неделю</TextS>} />
+                                  <Cell contentLeft={<TextS>Информация о матчах обновляется 2 раза в неделю</TextS>} />
                               </Col>
                           </Row>
                       </Col>
@@ -595,6 +577,14 @@ export class App extends React.Component {
                           >
                             <Badge text={<H3>{showing_match.team1.club}</H3>} size='l' style={{backgroundColor: 'purple'}}/>
                           </Col>
+                        </Row>
+                        <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
+                            <Col
+                                size={100}
+                                style={{display: 'flex', justifyContent: 'center'}}
+                            >
+                                <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H4>{showing_match.team1.scored}</H4>} />
+                            </Col>
                         </Row>
                         <Row style={{paddingBottom: '1rem'}}>
                           <Col
@@ -686,7 +676,7 @@ export class App extends React.Component {
                               size={100}
                           >
                               <Image
-                                  src={'https://raw.githubusercontent.com/incllude/GMSberApp/main/public/smllr.png'}
+                                  src={`https://raw.githubusercontent.com/incllude/GMSberApp/main/src/img/match_${this.state.index}.png`}
                                   width={this.state.width}
                                   height={this.state.height}
                                   style={{margin: 'auto'}}
@@ -720,6 +710,14 @@ export class App extends React.Component {
                             <Badge text={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} size='l' style={{backgroundColor: 'orange'}}/>
                           </Col>
                         </Row>
+                          <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
+                              <Col
+                                  size={100}
+                                  style={{display: 'flex', justifyContent: 'center'}}
+                              >
+                                  <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H4>{showing_match.team2.scored}</H4>} />
+                              </Col>
+                          </Row>
                         <Row style={{paddingBottom: '1rem'}}>
                           <Col
                               size={100}
