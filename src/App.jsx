@@ -205,6 +205,42 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.card_1 = null;
+    this.card_2 = null;
+    this.card_3 = null;
+    this.card_4 = null;
+    this.card_5 = null;
+    this.card_6 = null;
+    this.card_7 = null;
+
+    this.setCard1 = element => { this.card_1 = element; };
+    this.setCard2 = element => { this.card_2 = element; };
+    this.setCard3 = element => { this.card_3 = element; };
+    this.setCard4 = element => { this.card_4 = element; };
+    this.setCard5 = element => { this.card_5 = element; };
+    this.setCard6 = element => { this.card_6 = element; };
+    this.setCard7 = element => { this.card_7 = element; };
+
+    this.i_to_set = {
+        0: this.setCard1,
+        1: this.setCard2,
+        2: this.setCard3,
+        3: this.setCard4,
+        4: this.setCard5,
+        5: this.setCard6,
+        6: this.setCard7
+    }
+
+    this.focusCard1 = () => { if (this.card_1) this.card_1.focus(); };
+    this.focusCard2 = () => { if (this.card_2) this.card_2.focus(); };
+    this.focusCard3 = () => { if (this.card_3) this.card_3.focus(); };
+    this.focusCard4 = () => { if (this.card_4) this.card_4.focus(); };
+    this.focusCard5 = () => { if (this.card_5) this.card_5.focus(); };
+    this.focusCard6 = () => { if (this.card_6) this.card_6.focus(); };
+    this.focusCard7 = () => { if (this.card_7) this.card_7.focus(); };
+
+    this.focusCard1();
+
     this.empty_match = {
         league: '',
         date: '',
@@ -323,25 +359,40 @@ export class App extends React.Component {
          case 'ArrowUp':
           break;
          case 'ArrowLeft':
+          if (this.state.index === 0) {
+              this.makeFocused(0, 0);
+              this.setState({index: 0});
+          }
           if (this.state.index > 0) {
-            // this.setState({index: this.state.index - 1});
-            // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_NOT_BEGIN', parameters: {index: this.state.index}}});
-          } else {
-            // this.assistant.sendData({action: {action_id: 'EVENT_LEFT_BEGIN'}});
+            this.makeFocused(this.state.index, this.state.index - 1);
+            this.setState({index: this.state.index - 1});
           }
           break;
          case 'ArrowRight':
-          if (this.state.index < this.state.matches.length - 1) {
-            // this.setState({index: this.state.index + 1});
-            // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_NOT_END', parameters: {index: this.state.index}}});
-          } else {
-            // this.assistant.sendData({action: {action_id: 'EVENT_RIGHT_END'}});
+          if (this.state.index === this.state.showing_matches.length - 1) {
+              this.makeFocused(this.state.showing_matches.length - 1, this.state.showing_matches.length - 1);
+              this.setState({index: this.state.showing_matches.length - 1});
+          } else
+          if (this.state.index < this.state.showing_matches.length - 1) {
+            this.makeFocused(this.state.index, this.state.index + 1);
+            this.setState({index: this.state.index + 1});
           }
           break;
          case 'Enter':
          break;
       }
     });
+  }
+
+
+  makeFocused(prev, next) {
+      if (next === 0) this.focusCard1();
+      if (next === 1) this.focusCard2();
+      if (next === 2) this.focusCard3();
+      if (next === 3) this.focusCard4();
+      if (next === 4) this.focusCard5();
+      if (next === 5) this.focusCard6();
+      if (next === 6) this.focusCard7();
   }
 
   getStateForAssistant() {
@@ -399,6 +450,7 @@ export class App extends React.Component {
   show_match(action) {
       console.log('Active: ', document.activeElement.tagName, document.activeElement.type || 'N/A');
       if (action.index !== null && action.index !== this.state.index) {
+          this.makeFocused(this.state.index, action.index);
           this.setState({index: action.index});
       }
   }
@@ -442,29 +494,28 @@ export class App extends React.Component {
                             }}
                           >
                               <Card
-                                  tabIndex={i}
-                                  onFocus={() => this.show_match({index: i})}
-                                  focused={ i === this.state.index }
+                                  ref={this.i_to_set[i]}
+                                  focused={i === this.state.index}
                                   style={{
                                       outline: 'none',
                                       height: window.innerHeight * 0.15,
                                       width: window.innerWidth * (1 - 0.03 * showing_matches.length) / showing_matches.length
                                   }}
                               >
-                                <CardBody>
-                                  <CardContent>
-                                    {
-                                      i === 0 ?
-                                            <>
-                                                <H5>Справка</H5>
-                                            </>:
-                                            <>
-                                                <H3>{club_to_short[item.team1.club]}</H3>
-                                                <H3>{club_to_short[item.team2.club]}</H3>
-                                            </>
-                                    }
-                                  </CardContent>
-                                </CardBody>
+                                  <CardBody>
+                                      <CardContent>
+                                          {
+                                              i === 0 ?
+                                                  <>
+                                                      <H5>Справка</H5>
+                                                  </>:
+                                                  <>
+                                                      <H3>{club_to_short[item.team1.club]}</H3>
+                                                      <H3>{club_to_short[item.team2.club]}</H3>
+                                                  </>
+                                          }
+                                      </CardContent>
+                                  </CardBody>
                               </Card>
                           </Col>
                       ))
@@ -555,7 +606,7 @@ export class App extends React.Component {
                                         contentRight={<TextS>обозначает точку удара команды; чем больше размер, тем опаснее момент</TextS>}
                                         style={{paddingBottom: '0.5rem'}}
                                   />
-                                  <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextS>показывает ожидаемое количество голов команда, основанное на статистике</TextS>} />
+                                  <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextS>показывает ожидаемое количество голов команды, основанное на статистике</TextS>} />
                                   <Cell contentLeft={<TextS>Информация о матчах обновляется 2 раза в неделю</TextS>} />
                                   <Cell contentLeft={<TextS>Сокращения клубов взяты из официальных материалов чемпионата</TextS>} />
                               </Col>
