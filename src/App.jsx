@@ -9,7 +9,7 @@ import { sberBox, sberPortal } from '@salutejs/plasma-tokens/typo';
 import { body1} from '@salutejs/plasma-tokens';
 import { darkJoy, darkEva, darkSber } from '@salutejs/plasma-tokens/themes';
 import { text, background, gradient } from '@salutejs/plasma-tokens';
-import {CarouselItem, Cell} from "@salutejs/plasma-ui";
+import {Carousel, CarouselCol, CarouselItem, Cell} from "@salutejs/plasma-ui";
 import { BodyL, TextS, TextM, TextXS } from "@salutejs/plasma-ui";
 import { H5, H4, H3, H2, H1 } from "@salutejs/plasma-ui";
 import { DeviceThemeProvider, detectDevice } from '@salutejs/plasma-ui';
@@ -205,41 +205,41 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.card_1 = null;
-    this.card_2 = null;
-    this.card_3 = null;
-    this.card_4 = null;
-    this.card_5 = null;
-    this.card_6 = null;
-    this.card_7 = null;
-
-    this.setCard1 = element => { this.card_1 = element; };
-    this.setCard2 = element => { this.card_2 = element; };
-    this.setCard3 = element => { this.card_3 = element; };
-    this.setCard4 = element => { this.card_4 = element; };
-    this.setCard5 = element => { this.card_5 = element; };
-    this.setCard6 = element => { this.card_6 = element; };
-    this.setCard7 = element => { this.card_7 = element; };
-
-    this.i_to_set = {
-        0: this.setCard1,
-        1: this.setCard2,
-        2: this.setCard3,
-        3: this.setCard4,
-        4: this.setCard5,
-        5: this.setCard6,
-        6: this.setCard7
-    }
-
-    this.focusCard1 = () => { if (this.card_1) this.card_1.focus(); };
-    this.focusCard2 = () => { if (this.card_2) this.card_2.focus(); };
-    this.focusCard3 = () => { if (this.card_3) this.card_3.focus(); };
-    this.focusCard4 = () => { if (this.card_4) this.card_4.focus(); };
-    this.focusCard5 = () => { if (this.card_5) this.card_5.focus(); };
-    this.focusCard6 = () => { if (this.card_6) this.card_6.focus(); };
-    this.focusCard7 = () => { if (this.card_7) this.card_7.focus(); };
-
-    this.focusCard1();
+    // this.card_1 = null;
+    // this.card_2 = null;
+    // this.card_3 = null;
+    // this.card_4 = null;
+    // this.card_5 = null;
+    // this.card_6 = null;
+    // this.card_7 = null;
+    //
+    // this.setCard1 = element => { this.card_1 = element; };
+    // this.setCard2 = element => { this.card_2 = element; };
+    // this.setCard3 = element => { this.card_3 = element; };
+    // this.setCard4 = element => { this.card_4 = element; };
+    // this.setCard5 = element => { this.card_5 = element; };
+    // this.setCard6 = element => { this.card_6 = element; };
+    // this.setCard7 = element => { this.card_7 = element; };
+    //
+    // this.i_to_set = {
+    //     0: this.setCard1,
+    //     1: this.setCard2,
+    //     2: this.setCard3,
+    //     3: this.setCard4,
+    //     4: this.setCard5,
+    //     5: this.setCard6,
+    //     6: this.setCard7
+    // }
+    //
+    // this.focusCard1 = () => { if (this.card_1) this.card_1.focus(); };
+    // this.focusCard2 = () => { if (this.card_2) this.card_2.focus(); };
+    // this.focusCard3 = () => { if (this.card_3) this.card_3.focus(); };
+    // this.focusCard4 = () => { if (this.card_4) this.card_4.focus(); };
+    // this.focusCard5 = () => { if (this.card_5) this.card_5.focus(); };
+    // this.focusCard6 = () => { if (this.card_6) this.card_6.focus(); };
+    // this.focusCard7 = () => { if (this.card_7) this.card_7.focus(); };
+    //
+    // this.focusCard1();
 
     this.empty_match = {
         league: '',
@@ -285,7 +285,7 @@ export class App extends React.Component {
          })
          .finally(() => {
             this.setState({loading: false});
-            this.state.matches = this.state.matches.slice(0, 6);
+            this.state.matches = this.state.matches;
 
             this.edited_matches = this.state.matches.map(
               (value, index) => ({
@@ -359,22 +359,22 @@ export class App extends React.Component {
          case 'ArrowUp':
           break;
          case 'ArrowLeft':
-          if (this.state.index === 0) {
-              this.makeFocused(0, 0);
-              this.setState({index: 0});
-          }
+          // if (this.state.index === 0) {
+          //     this.makeFocused(0);
+          //     this.setState({index: 0});
+          // }
           if (this.state.index > 0) {
-            this.makeFocused(this.state.index, this.state.index - 1);
+            // this.makeFocused(this.state.index - 1);
             this.setState({index: this.state.index - 1});
           }
           break;
          case 'ArrowRight':
-          if (this.state.index === this.state.showing_matches.length - 1) {
-              this.makeFocused(this.state.showing_matches.length - 1, this.state.showing_matches.length - 1);
-              this.setState({index: this.state.showing_matches.length - 1});
-          } else
+          // if (this.state.index === this.state.showing_matches.length - 1) {
+          //     this.makeFocused(this.state.showing_matches.length - 1);
+          //     this.setState({index: this.state.showing_matches.length - 1});
+          // } else
           if (this.state.index < this.state.showing_matches.length - 1) {
-            this.makeFocused(this.state.index, this.state.index + 1);
+            // this.makeFocused(this.state.index + 1);
             this.setState({index: this.state.index + 1});
           }
           break;
@@ -385,7 +385,7 @@ export class App extends React.Component {
   }
 
 
-  makeFocused(prev, next) {
+  makeFocused(next) {
       if (next === 0) this.focusCard1();
       if (next === 1) this.focusCard2();
       if (next === 2) this.focusCard3();
@@ -407,7 +407,6 @@ export class App extends React.Component {
         ),
       },
     };
-    // console.log('getStateForAssistant: state:', state);
     return state;
   }
 
@@ -437,12 +436,15 @@ export class App extends React.Component {
 
   prev_match(){
     if (this.state.index > 0) {
+      // this.makeFocused(this.state.index - 1);
       this.setState({index: this.state.index - 1});
     }
   }
 
   next_match() {
-    if (this.state.index < this.state.matches.length - 1) {
+       console.log('next', this.state.index);
+    if (this.state.index < this.state.showing_matches.length - 1) {
+      // this.makeFocused(this.state.index + 1);
       this.setState({index: this.state.index + 1});
     }
   }
@@ -450,7 +452,6 @@ export class App extends React.Component {
   show_match(action) {
       console.log('Active: ', document.activeElement.tagName, document.activeElement.type || 'N/A');
       if (action.index !== null && action.index !== this.state.index) {
-          this.makeFocused(this.state.index, action.index);
           this.setState({index: action.index});
       }
   }
@@ -475,53 +476,57 @@ export class App extends React.Component {
           <Spinner size={100} style={{margin: 'auto'}} /> :
 
           <>
-              <Container>
-                  <Row
-                      style={{
-                          paddingTop: '1rem'
-                      }}
-                  >
-
-                    {
+              <Carousel
+                  index={this.state.index}
+                  axis="x"
+                  animatedScrollByIndex={true}
+                  detectActive={true}
+                  style={{ paddingTop: '1rem', paddingBottom: '0.5rem', outline: 'none'}}
+              >
+                  {
                       showing_matches.map((item, i) => (
-                          <Col
-                            sizeS={4 / showing_matches.length}
-                            sizeM={6 / showing_matches.length}
-                            sizeL={8 / showing_matches.length}
-                            sizeXL={12 / showing_matches.length}
-                            style={{
-                                display: 'flex', justifyContent: 'center',
-                            }}
-                          >
-                              <Card
-                                  ref={this.i_to_set[i]}
-                                  focused={i === this.state.index}
+                          <CarouselCol scrollSnapAlign="start">
+                              <div
                                   style={{
                                       outline: 'none',
-                                      height: window.innerHeight * 0.15,
-                                      width: window.innerWidth * (1 - 0.03 * showing_matches.length) / showing_matches.length
+                                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                      borderRadius: '50px',
+                                      width: window.innerWidth * 0.65,
+                                      marginLeft: window.innerWidth * 0.025,
+                                      marginRight: window.innerWidth * 0.015
                                   }}
                               >
-                                  <CardBody>
-                                      <CardContent>
-                                          {
-                                              i === 0 ?
-                                                  <>
-                                                      <H5>Справка</H5>
-                                                  </>:
-                                                  <>
-                                                      <H3>{club_to_short[item.team1.club]}</H3>
-                                                      <H3>{club_to_short[item.team2.club]}</H3>
-                                                  </>
-                                          }
-                                      </CardContent>
-                                  </CardBody>
-                              </Card>
-                          </Col>
+                                  <div
+                                      style={{
+                                          paddingTop: '0.5rem',
+                                          paddindBottom: '0.5rem',
+                                          marginLeft: '1.25rem',
+                                          marginRight: '2rem'
+                                      }}
+                                  >
+                                  {
+                                      i === 0 ?
+                                          <>
+                                              <Cell contentLeft={<H3>Последние матчи</H3>}/>
+                                              <Cell contentLeft={<H3>Справка</H3>}/>
+                                          </>:
+                                          <>
+                                              <Cell
+                                                  contentLeft={<H3>{item.team1.club}</H3>}
+                                                  contentRight={<H3>{item.team1.scored}</H3>}
+                                              />
+                                              <Cell
+                                                  contentLeft={<H3>{item.team2.club}</H3>}
+                                                  contentRight={<H3>{item.team2.scored}</H3>}
+                                              />
+                                          </>
+                                  }
+                                  </div>
+                              </div>
+                          </CarouselCol>
                       ))
-                    }
-                  </Row>
-              </Container>
+                  }
+              </Carousel>
           <Container>
 
             {
@@ -529,10 +534,10 @@ export class App extends React.Component {
 
                   <Row>
                       <Col
-                          sizeS={2}
-                          sizeM={3}
-                          sizeL={4}
-                          sizeXL={6}
+                          sizeS={2.4}
+                          sizeM={3.6}
+                          sizeL={4.8}
+                          sizeXL={7.2}
                       >
                           <Row style={{paddingTop: '1rem', paddingBottom: '0.5rem'}}>
                               <Col
@@ -550,7 +555,7 @@ export class App extends React.Component {
                                               sizeL={4 - this.state.dots / 2}
                                               sizeXL={6 - this.state.dots / 2}
                                           >
-                                              <TextS style={{textAlign: 'right'}}>({club_to_short[item.team1]}) {item.team1}</TextS>
+                                              <H4 style={{textAlign: 'right'}}>{item.team1}</H4>
                                           </Col>
                                           <Col
                                               sizeS={this.state.dots}
@@ -558,7 +563,7 @@ export class App extends React.Component {
                                               sizeL={this.state.dots}
                                               sizeXL={this.state.dots}
                                           >
-                                              <TextS style={{textAlign: 'center'}}>-</TextS>
+                                              <H4 style={{textAlign: 'center'}}>-</H4>
                                           </Col>
                                           <Col
                                               sizeS={2 - this.state.dots / 2}
@@ -566,7 +571,7 @@ export class App extends React.Component {
                                               sizeL={4 - this.state.dots / 2}
                                               sizeXL={6 - this.state.dots / 2}
                                           >
-                                              <TextS style={{textAlign: 'left'}}>{item.team2} ({club_to_short[item.team2]})</TextS>
+                                              <H4 style={{textAlign: 'left'}}>{item.team2}</H4>
                                           </Col>
                                       </Row>
                                   ))
@@ -574,17 +579,10 @@ export class App extends React.Component {
                       </Col>
 
                       <Col
-                          sizeS={0.67}
-                          sizeM={1}
-                          sizeL={1.33}
-                          sizeXL={2}
-                      >
-                      </Col>
-                      <Col
-                          sizeS={1.33}
-                          sizeM={2}
-                          sizeL={2.67}
-                          sizeXL={4}
+                          sizeS={1.6}
+                          sizeM={2.4}
+                          sizeL={3.2}
+                          sizeXL={4.8}
                       >
                           <Row style={{paddingTop: '1rem', paddingBottom: '0.5rem'}}>
                               <Col
@@ -603,12 +601,11 @@ export class App extends React.Component {
                                           <Badge size='s' style={{backgroundColor: 'orange'}}/>
                                       </div>
                                   }
-                                        contentRight={<TextS>обозначает точку удара команды; чем больше размер, тем опаснее момент</TextS>}
+                                        contentRight={<TextM>обозначает точку удара команды; чем больше размер, тем опаснее момент</TextM>}
                                         style={{paddingBottom: '0.5rem'}}
                                   />
-                                  <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextS>показывает ожидаемое количество голов команды, основанное на статистике</TextS>} />
-                                  <Cell contentLeft={<TextS>Информация о матчах обновляется 2 раза в неделю</TextS>} />
-                                  <Cell contentLeft={<TextS>Сокращения клубов взяты из официальных материалов чемпионата</TextS>} />
+                                  <Cell style={{paddingBottom: '0.5rem'}} contentLeft={<H4>Число pG</H4>} contentRight={<TextM>показывает ожидаемое количество голов команды, основанное на статистике</TextM>} />
+                                  <Cell contentLeft={<TextM>Информация о матчах обновляется 1 раз в неделю</TextM>} />
                               </Col>
                           </Row>
                       </Col>
@@ -641,14 +638,6 @@ export class App extends React.Component {
                           >
                             <Badge text={<H3>{showing_match.team1.club}</H3>} size='l' style={{backgroundColor: 'purple'}}/>
                           </Col>
-                        </Row>
-                        <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
-                            <Col
-                                size={100}
-                                style={{display: 'flex', justifyContent: 'center'}}
-                            >
-                                <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H3>{showing_match.team1.scored}</H3>} />
-                            </Col>
                         </Row>
                         <Row style={{paddingBottom: '1rem'}}>
                           <Col
@@ -774,14 +763,6 @@ export class App extends React.Component {
                             <Badge text={<H3 style={{color: 'black'}}>{showing_match.team2.club}</H3>} size='l' style={{backgroundColor: 'orange'}}/>
                           </Col>
                         </Row>
-                          <Row style={{paddingBottom: '0.5rem', paddingTop: '0.5rem'}}>
-                              <Col
-                                  size={100}
-                                  style={{display: 'flex', justifyContent: 'center'}}
-                              >
-                                  <Cell style={{width: '75%'}} contentLeft={<H5>Забито</H5>} contentRight={<H3>{showing_match.team2.scored}</H3>} />
-                              </Col>
-                          </Row>
                         <Row style={{paddingBottom: '1rem'}}>
                           <Col
                               size={100}
